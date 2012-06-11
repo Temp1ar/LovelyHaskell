@@ -1,0 +1,42 @@
+M = (\ab -> a b) x y
+N = (\ab -> b a) y x
+L = y (\t -> t t)
+
+M[x := N] = (\ab -> a b) ((\ab -> b a) y x) y
+M[x := N][y := L] = (\ab -> a b) ((\ab -> b a) (y (\t -> t t)) x) (y (\t -> t t))
+
+M[y := L] = (\ab -> a b) x (y (\t -> t t))
+M[y := L][x: = N] = (\ab -> a b) ((\ab -> b a) y x) (y (\t -> t t))
+N[y := L] = (\ab -> b a) (y (\t -> t t)) x
+M[y := L][x: = N] = (\ab -> a b) x (y (\t -> t t))
+M[y := L][x: = N[y := L]] = (\ab -> a b) ((\ab -> b a) (y (\t -> t t)) x) (y (\t -> t t))
+
+Типизируйте по Чёрчу: λx : ?. λy : ?. x (y x) : ?
+\x:(a->b) y:((a->b)->a) . x (y x) : b
+
+2 = \sz -> s(sz)
+w 2 = (\x -> x x) 2 = \sz -> s(sz) $ \sz -> s(sz) =
+\z -> (\sz -> s(sz)) ((\sz' -> s(sz')) z) =    -- WHNF
+\z -> (\sz* -> s(sz*)) (\z' -> z (zz')) =
+\z -> (\z* -> (\z' -> z (zz'))((\z' -> z (zz'))z*))  =
+\z -> (\z* -> z(z(z(zz*)))) -- NF = 4 :)
+
+(s->s->a) -> (a->b->g) -> (s->b) -> s -> g
+\f1 f2 f3 x -> f2 (f1 x x) (f3 x)
+
+(s->s->a)->(g->a)->(a->b)->s->g->b
+\f1 f2 f3 x y -> f3 (f1 x x)
+\f1 f2 f3 x y -> f3 (f2 y)
+
+(g -> e) -> ( (g -> e) -> e ) -> e
+\f1 f2 -> f2 (\t -> f1 t)
+
+((a->b)->a) -> (a->a->b) -> a
+\f1 f2 -> f1 (\t -> (f2 t t))
+
+((a->b)->a) -> (a->a->b) -> b
+\f1 f2 -> f2 (f1 (\t -> (f2 t t))) (f1 (\t -> (f2 t t)))
+
+F = λx y z. x z (y z)
+
+λsz.s(s(s(s(sz))))
